@@ -1,12 +1,17 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Word {
     private String word;
     private ArrayList<Character> guessedLetters;
     private ArrayList<Character> display;
 
+    private String[] wordRoster = {"cereal", "boxing", "dictionary", "github", "college", "linguini", "codingiscool", "chemistry"};
+
     public Word() {
-        word = "supercalifragilisticexpialidocious";
+        Random rand = new Random();
+        int wordIndex = rand.nextInt(wordRoster.length - 1);
+        word = wordRoster[wordIndex];
         guessedLetters = new ArrayList<>();
         display = new ArrayList<>();
 
