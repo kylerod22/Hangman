@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Hangman" target="1.5" />
+      <module name="Hangman" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>
