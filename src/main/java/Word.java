@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,35 +21,34 @@ public class Word {
         }
     }
 
-    public boolean guessLetter(char c) {
+    public boolean guessLetter(char c, JLabel label) {
         guessedLetters.add(c);
         if (word.contains(c + "")) {
             return true;
         } else {
-            System.out.println("Wrong!");
+            label.setText("Wrong!");
             return false;
         }
     }
 
     public boolean duplicateGuess(char c) {
         if (guessedLetters.contains(c)) {
-            System.out.println("You've already guessed that letter, try again.");
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean updateDisplay(char c) {
+    public boolean updateDisplay(char c, JLabel displayLabel, JLabel statusLabel) {
         for (int i =0; i < word.length(); i++) {
             if (word.charAt(i) == c) {
                 display.set(i, c);
             }
         }
 
-        print();
+       displayLabel.setText(print());
         if (!display.contains('_')) {
-            System.out.println("You Win!");
+            statusLabel.setText("You Win!");
             return true;
         } else {
             return false;

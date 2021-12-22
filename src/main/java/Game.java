@@ -3,9 +3,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
-import java.util.Scanner;
 
 public class Game {
+
+    public boolean runGame = true;
 
     public final int dimension = 350;
     private Word secretWord;
@@ -14,11 +15,14 @@ public class Game {
     private JFrame frame;
     private JPanel panel;
     private JLabel wordDisplay;
-    private JLabel status;
+    private JLabel statusDisplay;
     private JTextField inputField;
     private JButton guessButton;
+    private JLabel guessDisplay;
 
     public Game() {
+
+
 
         secretWord = new Word();
         man = new Man();
@@ -29,16 +33,15 @@ public class Game {
         panel = new JPanel();
         frame.add(panel);
 
-        GridLayout layout = new GridLayout(4, 0);
+        GridLayout layout = new GridLayout(5, 0);
         layout.setVgap(25);
 
         panel.setLayout(layout);
 
-        status = new JLabel("Guess a Letter");
-        status.setHorizontalAlignment(JLabel.CENTER);
-        status.setFont(new Font("Verdana", Font.PLAIN, 25));
-        panel.add(status);
-
+        statusDisplay = new JLabel("Guess a Letter");
+        statusDisplay.setHorizontalAlignment(JLabel.CENTER);
+        statusDisplay.setFont(new Font("Verdana", Font.PLAIN, 25));
+        panel.add(statusDisplay);
 
         wordDisplay = new JLabel(secretWord.print());
         wordDisplay.setHorizontalAlignment(JLabel.CENTER);
@@ -53,17 +56,46 @@ public class Game {
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (runGame) {
+                    String guess = inputField.getText();
+                    if (guess.length() != 1 || !Character.isLetter(guess.charAt(0))) { //Check if entered input is a valid LETTER
+                        statusDisplay.setText("Enter a LETTER, please: ");
+                        return;
+                    } else {
+                        guess = guess.toLowerCase(Locale.ROOT);
+                        char guessedLetter = guess.charAt(0);
+                        if (secretWord.duplicateGuess(guessedLetter)) {
+                            statusDisplay.setText("You've already guessed that letter, try again.");
+                            return;
+                        }
 
+                        if (secretWord.guessLetter(guessedLetter, statusDisplay)) { //Check if secretWord contains guessedLetter and print accordingly
+                            if (secretWord.updateDisplay(guessedLetter, wordDisplay, statusDisplay)) { //Check if whole word has been guessed
+                                runGame = false;
+                            }
+                        } else {
+                            man.wrongGuess();
+                            wordDisplay.setText(secretWord.print());
+                        }
+
+                        if (!man.update(guessDisplay, statusDisplay)) { //If no more guesses
+                            runGame = false;
+                        }
+                    }
+                }
             }
         });
         panel.add(guessButton);
+
+        guessDisplay = new JLabel("You have " + man.guesses + " guess(es) remaining.");
+        guessDisplay.setHorizontalAlignment(JLabel.CENTER);
+        guessDisplay.setFont(new Font("Verdana", Font.PLAIN, 30));
+        panel.add(guessDisplay);
 
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Hangman");
         frame.pack();
-
-
 
         frame.setVisible(true);
     }

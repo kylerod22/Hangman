@@ -1,15 +1,17 @@
+import javax.swing.*;
+
 public class Man {
 
-    private int guesses;
+    protected int guesses;
     public Man() {guesses = 5;}
 
     public void wrongGuess() {guesses--;}
-    public boolean update() {
+    public boolean update(JLabel guesslabel, JLabel statusLabel) {
+        guesslabel.setText("You have " + guesses + " guess(es) remaining." + "\n");
         if (guesses > 0) {
-            System.out.println("You have " + guesses + " guess(es) remaining." + "\n");
             return true;
         } else {
-            System.out.println("You lose!");
+            statusLabel.setText("You lose!");
             return false;
         }
 
