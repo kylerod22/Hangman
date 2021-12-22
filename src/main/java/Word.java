@@ -55,10 +55,11 @@ public class Word {
         }
     }
 
-    public void print() {
+    public String print() {
+        String sOut = "";
         for (Character c : display) {
-            System.out.print(c + " ");
+            sOut += (c + " ");
         }
-        System.out.print("\n");
+        return sOut;
     }
 }
