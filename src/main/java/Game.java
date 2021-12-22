@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Locale;
 
 public class Game {
@@ -21,9 +19,6 @@ public class Game {
     private JLabel guessDisplay;
 
     public Game() {
-
-
-
         secretWord = new Word();
         man = new Man();
 
@@ -53,34 +48,31 @@ public class Game {
         panel.add(inputField);
 
         guessButton = new JButton("Guess Letter");
-        guessButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (runGame) {
-                    String guess = inputField.getText();
-                    if (guess.length() != 1 || !Character.isLetter(guess.charAt(0))) { //Check if entered input is a valid LETTER
-                        statusDisplay.setText("Enter a LETTER, please: ");
+        guessButton.addActionListener(event -> {
+            if (runGame) {
+                String guess = inputField.getText();
+                if (guess.length() != 1 || !Character.isLetter(guess.charAt(0))) { //Check if entered input is a valid LETTER
+                    statusDisplay.setText("Enter a LETTER, please: ");
+                    return;
+                } else {
+                    guess = guess.toLowerCase(Locale.ROOT);
+                    char guessedLetter = guess.charAt(0);
+                    if (secretWord.duplicateGuess(guessedLetter)) {
+                        statusDisplay.setText("You've already guessed that letter, try again.");
                         return;
-                    } else {
-                        guess = guess.toLowerCase(Locale.ROOT);
-                        char guessedLetter = guess.charAt(0);
-                        if (secretWord.duplicateGuess(guessedLetter)) {
-                            statusDisplay.setText("You've already guessed that letter, try again.");
-                            return;
-                        }
+                    }
 
-                        if (secretWord.guessLetter(guessedLetter, statusDisplay)) { //Check if secretWord contains guessedLetter and print accordingly
-                            if (secretWord.updateDisplay(guessedLetter, wordDisplay, statusDisplay)) { //Check if whole word has been guessed
-                                runGame = false;
-                            }
-                        } else {
-                            man.wrongGuess();
-                            wordDisplay.setText(secretWord.print());
-                        }
-
-                        if (!man.update(guessDisplay, statusDisplay)) { //If no more guesses
+                    if (secretWord.guessLetter(guessedLetter, statusDisplay)) { //Check if secretWord contains guessedLetter and print accordingly
+                        if (secretWord.updateDisplay(guessedLetter, wordDisplay, statusDisplay)) { //Check if whole word has been guessed
                             runGame = false;
                         }
+                    } else {
+                        man.wrongGuess();
+                        wordDisplay.setText(secretWord.print());
+                    }
+
+                    if (!man.update(guessDisplay, statusDisplay)) { //If no more guesses
+                        runGame = false;
                     }
                 }
             }
@@ -102,41 +94,5 @@ public class Game {
 
     public static void main(String[] args) {
         new Game();
-
-
-        /*
-
-
-        Scanner input = new Scanner(System.in);
-        secretWord.print();
-
-        while (true) {
-            System.out.println("Guess a Letter: ");
-            String guess = input.nextLine();
-            guess = guess.replaceAll("\\s", "");
-            while (guess.length() != 1 || !Character.isLetter(guess.charAt(0))) { //Check if entered input is a valid LETTER
-                System.out.println("Enter a LETTER, please: ");
-                guess = input.nextLine();
-            }
-            guess = guess.toLowerCase(Locale.ROOT);
-            char guessedLetter = guess.charAt(0);
-
-            if (secretWord.duplicateGuess(guessedLetter)) {
-                continue;
-            }
-
-            if (secretWord.guessLetter(guessedLetter)) { //Check if secretWord contains guessedLetter and print accordingly
-                if (secretWord.updateDisplay(guessedLetter)) { //Check if whole word has been guessed
-                    break;
-                }
-            } else {
-                man.wrongGuess();
-                secretWord.print();
-            }
-
-            if (!man.update()) { //If no more guesses
-                break;
-            }
-        }*/
     }
 }
